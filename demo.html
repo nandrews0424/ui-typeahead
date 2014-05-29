@@ -1,0 +1,98 @@
+<!doctype html>
+
+<html>
+  <head>
+    <title>ui-typeahead</title>
+    <script src="bower_components/platform/platform.js"></script>
+    <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css">
+    <link rel="import" href="bower_components/polymer/polymer.html">
+    <link rel="import" href="build/ui-typeahead.html">
+
+    <style>
+      body {
+        font-family: "Helvetica Neue", "Helvetica", Arial;
+      }
+        
+      ui-typeahead-item {
+        background: #fff;
+      }
+
+      ui-typeahead-item i {
+        margin-right: 10px;
+      }
+
+      ui-typeahead-item[focused] {
+        background: #eee;
+      }
+
+      ui-typeahead-item[selected] {
+        background: #336699;
+        color: #fff;
+      }
+
+    </style>
+  </head>
+  <body unresolved>
+    <div id="holder">
+      
+      <ui-typeahead icon="fa-search" placeholder="This is a typeahead" debounce="200">
+
+        <!-- dynamically templated items -->         
+        <template id="typeahead-template" repeat="{{items}}">
+          <ui-typeahead-item>
+            <span><i class="fa {{icon}}"></i> {{ text }}</span>
+          </ui-typeahead-item>
+        </template>
+
+      </ui-typeahead>
+
+      <template id="selected-item" bind="{{item}}">
+        <div>
+          <h4>
+            Selected Item
+          </h4>
+          {{text}}
+        </div>
+      </template>
+    
+    </div>
+    <script>
+      
+      document.addEventListener('polymer-ready', function() {
+        
+        var items = []
+        var typeahead = document.querySelector('ui-typeahead');
+        var setData = function(prefix) {
+          
+          var t = document.querySelector('#typeahead-template');
+          
+          items = [
+            { icon: 'fa-eye', text: 'Hello ' + prefix },
+            { icon: 'fa-car', text: 'Goodbye ' + prefix },
+            { icon: 'fa-check', text: 'I has ' + prefix },
+            { icon: 'fa-plus', text: 'Making ' + prefix }
+          ];
+          
+          if (!prefix )
+            items = []
+
+          t.model = { items: items };
+
+          Platform.performMicrotaskCheckpoint(); 
+        };
+
+        typeahead.addEventListener('inputChange', function(e) {
+          setData(e.detail.text);
+        });
+
+        typeahead.addEventListener('change', function(e) {
+          console.log('value changed', e.detail);
+          document.querySelector('#selected-item').model = { item: items[e.detail.index] };
+          Platform.performMicrotaskCheckpoint(); 
+        });
+
+      });
+
+    </script>
+  </body>
+</html>

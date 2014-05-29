@@ -1,0 +1,26 @@
+{
+  "name": "ui-typeahead",
+  "version": "0.0.0",
+  "dependencies": {
+    "coffeeify": "",
+    "coffee-script": "",
+    "browserify": "",
+    "browserify-data": "",
+    "gulp": "",
+    "gulp-browserify": "",
+    "gulp-shell": "",
+    "gulp-less": "",
+    "gulp-replace": "",
+    "gulp-rename": "",
+    "gulp-concat": "",
+    "vulcanize": "",
+    "express": "",
+    "ui-input": "git://github.com/wballard/ui-input",
+    "lodash": "^2.4.1"
+  },
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "bower install && gulp --require coffee-script/register --gulpfile gulpfile.litcoffee build",
+    "test": "gulp --require coffee-script/register --gulpfile gulpfile.litcoffee watch"
+  }
+}

@@ -1,0 +1,21 @@
+:host {
+  display: block;
+  position: relative;
+
+  .results {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    right: 0;
+    border: solid 1px #ccc;
+    border-top: none;
+    background: #fff;
+
+
+    // this won't work b/c they're included in the 
+    ui-typeahead-item {
+      margin-bottom:40px;
+      border-bottom: none;
+    }
+  }
+}
