@@ -28,8 +28,20 @@ Typeahead control that handles the common typeahead functionality by the followi
 
 
 
+##Events
 
-##Attributes and Change Handlers
+### change
+
+Change fires when the selected `ui-typeahead-item` changes.  It returns a detail object with 3 properties
+
+- `index` is index of the selected `ui-typeahead-item` or -1 if item was deselected.  If you have both static and data 
+  bound items be aware that this index includes both and may not correspond directly to the index of the data you bound
+- `item` is the selected `ui-typeahead-item` DOM object or null if the selection was removed
+
+### inputChange
+
+inputChange fires when user changes the text input of the typehead.  This event is debounced per the debounce property (in milliseconds) and only fires
+When the value is different that the previously emitted value.  The event detail contains a single `value` property with the input text, or null if it's been cleared.
 
 ##Methods
 
