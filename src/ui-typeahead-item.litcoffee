@@ -1,19 +1,13 @@
 
-# UI typeahead item 
+#ui-typeahead-item
 
     Polymer 'ui-typeahead-item',
 
-##Attributes and Change Handlers
-
 ##Event Handlers
 
-##Polymer Lifecycle
-
-Rebubble click events as this element so it's easier for the ui-typeahead to capture them
-  
-      focusChanged: (a,b) ->
-        console.log "Focus on item changed", 
-
+Rebubbles click events with target as this element
+simplifies the checking in ui-typeahead that determines whether or not
+an item has beens elected
 
       rebubbleClick: (evt) ->
         if evt.target isnt @
@@ -23,8 +17,3 @@ Rebubble click events as this element so it's easier for the ui-typeahead to cap
 
       attached: ->
         @addEventListener "click", @rebubbleClick
-
-      domReady: ->
-
-      detached: ->
-

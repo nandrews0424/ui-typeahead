@@ -1,19 +1,12 @@
 
-# UI typeahead item 
+#ui-typeahead-item
 
-
-##Attributes and Change Handlers
 
 ##Event Handlers
 
-##Polymer Lifecycle
-
-Rebubble click events as this element so it's easier for the ui-typeahead to capture them
-
-
-
-
-
+Rebubbles click events with target as this element
+simplifies the checking in ui-typeahead that determines whether or not
+an item has beens elected
 
 
 
@@ -24,13 +17,12 @@ Rebubble click events as this element so it's easier for the ui-typeahead to cap
 
 #ui-typeahead
 
-Typeahead control that handles the commonly needed functionality: 
+Typeahead control that handles the common typeahead functionality by the following:
 
-- Expects the page to provide `ui-typeahead-item` entries that 
-- Emits a debounced `inputChange` event that can be handled by the containing page/control to retrieve the data
-- Binds the provided `results` and renders the provided result items
-- Emits an `change` when the selected item is changed
-- Handles keypresses for navigating through the items
+- Captures and debouncing user input per the `debounce` attribute
+- Allows keypress and click navigation and selection of provided child `ui-typeahead-item` elements
+- Publishes two events, `inputChange` that the containing page can use to retrieve the relevant data and template
+  in the `ui-typeahead-items`, and `change` which fires when the selected item changes
 
 
 
@@ -40,6 +32,10 @@ Typeahead control that handles the commonly needed functionality:
 ##Attributes and Change Handlers
 
 ##Methods
+
+### selectItem and clear
+
+Selects the provided `ui-typeahead-item`, while clear is simply an alias for `selectItem(null)`.
 
 
 
@@ -59,19 +55,30 @@ Typeahead control that handles the commonly needed functionality:
 
 
 
+### documentClick 
+
 Since we stop click propagation from within our element, anything
 bubbling up to the document handler is outside us and should unfocus the element
 
 
 
+### click
+
+Clicks on a ui-typeahead-item mark it as selected, all clicks within ui-typeahead 
+are swallowed at this point
 
 
 
 
 
+### keyup
+
+On keyup, the typeahead checks for control keypresses and otherwise fires the `debouncedKeyPress` 
+function, which debounces and then emits `change` (assuming that after the debounce the value 
+is in fact different) 
 
 
-Handle various control keypresses or debounce and pass on keypress event
+
 
 
 
@@ -92,20 +99,25 @@ Handle various control keypresses or debounce and pass on keypress event
 ##Polymer Lifecycle
 
 
+### attached
 
-
-
-We debounce the keypresses and make sure we only emit the value
-if it's actually changed ignoring arrow keys etc that don't affect the data
-
-
-
-
+Wiring up the various event handlers, including a document level click 
+handler that sets focused to false when clicking outside the control (actual blur wasn't working
+and would trigger even when clicking results withint the ui-typeahead)
 
 
 
 
 
 
+
+
+
+
+
+
+### detached
+
+Unwiring the document level click handler. 
 
 

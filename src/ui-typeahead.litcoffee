@@ -1,12 +1,12 @@
 #ui-typeahead
 
-Typeahead control that handles the commonly needed functionality: 
+Typeahead control that handles the common typeahead functionality by the following:
 
-- Expects the page to provide `ui-typeahead-item` entries that 
-- Emits a debounced `inputChange` event that can be handled by the containing page/control to retrieve the data
-- Binds the provided `results` and renders the provided result items
-- Emits an `change` when the selected item is changed
-- Handles keypresses for navigating through the items
+- Captures and debouncing user input per the `debounce` attribute
+- Allows keypress and click navigation and selection of provided child `ui-typeahead-item` elements
+- Publishes two events, `inputChange` that the containing page can use to retrieve the relevant data and template
+  in the `ui-typeahead-items`, and `change` which fires when the selected item changes
+
 
     _ = require('../node_modules/lodash/dist/lodash.js')
     lastEmittedValue = null
@@ -18,6 +18,10 @@ Typeahead control that handles the commonly needed functionality:
 
 ##Methods
       
+### selectItem and clear
+
+Selects the provided `ui-typeahead-item`, while clear is simply an alias for `selectItem(null)`.
+
       selectItem: (item) ->
         items = @querySelectorAll('ui-typeahead-item')
         _.each items, (i) ->
@@ -32,10 +36,14 @@ Typeahead control that handles the commonly needed functionality:
         index = _.indexOf items, item
         @fire 'change', { item, index, query: @$.input.value }
 
+      clear: -> selectItem null
+
 ##Event Handlers
       
       focus: (evt) ->
         @focused = true
+
+### documentClick 
 
 Since we stop click propagation from within our element, anything
 bubbling up to the document handler is outside us and should unfocus the element
@@ -43,16 +51,25 @@ bubbling up to the document handler is outside us and should unfocus the element
       documentClick: (evt) ->
         @focused = false 
 
+### click
+
+Clicks on a ui-typeahead-item mark it as selected, all clicks within ui-typeahead 
+are swallowed at this point
+
       click: (evt) ->
         evt.stopPropagation()
         if evt.target in @querySelectorAll('ui-typeahead-item')
           @selectItem evt.target
 
+### keyup
+
+On keyup, the typeahead checks for control keypresses and otherwise fires the `debouncedKeyPress` 
+function, which debounces and then emits `change` (assuming that after the debounce the value 
+is in fact different) 
+
       keyup: (evt) ->
         items = @querySelectorAll('ui-typeahead-item')
         focusIndex = _.findIndex items, (i) -> i.hasAttribute 'focused'
-        
-Handle various control keypresses or debounce and pass on keypress event
 
         if evt.which is 40 
           items[focusIndex]?.removeAttribute 'focused'
@@ -73,16 +90,15 @@ Handle various control keypresses or debounce and pass on keypress event
 
 ##Polymer Lifecycle
 
-      created: ->
 
-      ready: ->
+### attached
+
+Wiring up the various event handlers, including a document level click 
+handler that sets focused to false when clicking outside the control (actual blur wasn't working
+and would trigger even when clicking results withint the ui-typeahead)
 
       attached: ->
         @debounce ||= 300
-
-We debounce the keypresses and make sure we only emit the value
-if it's actually changed ignoring arrow keys etc that don't affect the data
-
         @debouncedKeyPress = _.debounce ->
           if @$.input.value isnt lastEmittedValue
             lastEmittedValue = @$.input.value
@@ -94,7 +110,9 @@ if it's actually changed ignoring arrow keys etc that don't affect the data
         @addEventListener 'keyup', @keyup
         window.addEventListener 'click', (evt) => @documentClick(evt)
 
-      domReady: ->
+### detached
+
+Unwiring the document level click handler. 
 
       detached: ->
         window.removeEventListener 'click', @documentClick
