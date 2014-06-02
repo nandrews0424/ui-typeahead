@@ -5,18 +5,17 @@
   <link rel="stylesheet" type="text/css" href="./ui-typeahead.css">
   <ui-input id="input" icon="{{icon}}" placeholder="{{placeholder}}"></ui-input>  
   
-  <template if="{{focused}}">
-    <div class="results">
-      <content>
+  
+  <div id="results" class="results">
+    <content>
 
-      </content>
-    </div>
-  </template>
+    </content>
+  </div>
+
 
 </template>
 <script src="./ui-typeahead.js"></script>
 </polymer-element>
-
 
 
 <!-- TODO: could support icons,  -->

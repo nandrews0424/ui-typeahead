@@ -4,18 +4,28 @@
 
   .results {
     position: absolute;
-    top: 40px;
     left: 0;
     right: 0;
-    border: solid 1px #ccc;
+    border-left: solid 1px #ccc;
+    border-right: solid 1px #ccc;
     border-top: none;
     background: #fff;
+  }
 
+  ui-typeahead-item {
+    display:none;
+  }
 
-    // this won't work b/c they're included in the 
+  &.focused {
     ui-typeahead-item {
-      margin-bottom:40px;
-      border-bottom: none;
+      display:block;
     }
   }
+
+
+
+
+
+
+
 }

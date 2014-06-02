@@ -13,12 +13,19 @@
         font-family: "Helvetica Neue", "Helvetica", Arial;
       }
         
+
+      ui-typeahead {
+        width: 50%;
+      }
+
       ui-typeahead-item {
         background: #fff;
+        padding: .65em;
       }
 
       ui-typeahead-item i {
-        margin-right: 10px;
+        margin-right: .3em;
+        color: #666;
       }
 
       ui-typeahead-item[focused] {
@@ -26,9 +33,37 @@
       }
 
       ui-typeahead-item[selected] {
-        background: #336699;
-        color: #fff;
+        background: #E4F3F8;
       }
+
+      ui-typeahead[selected] ui-typeahead-item {
+        display:none;
+      }
+
+      ui-typeahead[selected] ui-typeahead-item[selected] {
+        display:block;
+        
+        position: absolute;
+        left:0;
+        right:0;
+      }
+
+      ui-typeahead-item[selected]::before {
+        float:right;
+        content: "(change)";
+        color: #89A5AF;
+        
+      }
+
+      ui-typeahead-item[hide] {
+        display:none;
+      }
+
+      p {
+        font-size: 1.25em;
+        width: 50%;
+      }
+
 
     </style>
   </head>
@@ -48,10 +83,12 @@
 
       <template id="selected-item" bind="{{item}}">
         <div>
-          <h4>
-            Selected Item
-          </h4>
-          {{text}}
+          <h3>
+            {{text}}
+          </h3>
+          <p>
+            {{detail}}
+          </p>
         </div>
       </template>
     
@@ -62,15 +99,31 @@
         
         var items = []
         var typeahead = document.querySelector('ui-typeahead');
+
         var setData = function(prefix) {
           
           var t = document.querySelector('#typeahead-template');
           
           items = [
-            { icon: 'fa-eye', text: 'Hello ' + prefix },
-            { icon: 'fa-car', text: 'Goodbye ' + prefix },
-            { icon: 'fa-check', text: 'I has ' + prefix },
-            { icon: 'fa-plus', text: 'Making ' + prefix }
+            { 
+              icon: 'fa-eye', 
+              text: 'Hello ' + prefix, 
+              detail: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. " },
+            { 
+              icon: 'fa-car', 
+              text: 'Goodbye ' + prefix,
+              detail: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt." 
+            },
+            { 
+              icon: 'fa-check', 
+              text: 'Another ' + prefix,
+              detail: "Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem." 
+            },
+            { 
+              icon: 'fa-plus', 
+              text: 'The Final ' + prefix,
+              detail: "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? " 
+            }
           ];
           
           if (!prefix )

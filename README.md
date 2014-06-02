@@ -25,6 +25,15 @@ Typeahead control that handles the common typeahead functionality by the followi
   in the `ui-typeahead-items`, and `change` which fires when the selected item changes
 
 
+TODO: add height calculation for placing the results
+
+
+
+
+
+
+
+
 
 
 
@@ -49,6 +58,19 @@ When the value is different that the previously emitted value.  The event detail
 
 Selects the provided `ui-typeahead-item`, while clear is simply an alias for `selectItem(null)`.
 
+
+
+
+
+
+
+
+
+
+
+
+We set the attributes for the selected item including the top incase the consumer would like to overlay the 
+selection over the original input box
 
 
 
@@ -92,6 +114,13 @@ is in fact different)
 
 
 
+We pull the 'selected attribute off the typeahead' so on subsequent keypresses items can be seen
+after initial item selection
+
+
+
+
+
 
 
 
@@ -116,6 +145,8 @@ is in fact different)
 Wiring up the various event handlers, including a document level click 
 handler that sets focused to false when clicking outside the control (actual blur wasn't working
 and would trigger even when clicking results withint the ui-typeahead)
+
+
 
 
 

@@ -7,9 +7,17 @@ Typeahead control that handles the common typeahead functionality by the followi
 - Publishes two events, `inputChange` that the containing page can use to retrieve the relevant data and template
   in the `ui-typeahead-items`, and `change` which fires when the selected item changes
 
+
     _ = require('../node_modules/lodash/dist/lodash.js')
     lastEmittedValue = null
+    keys = 
+      up: 38
+      down: 40
+      enter: 13
+      escape: 27
+      tab: 9
     
+
     Polymer 'ui-typeahead',
 
 ##Events
@@ -35,10 +43,24 @@ Selects the provided `ui-typeahead-item`, while clear is simply an alias for `se
 
       selectItem: (item) ->
         items = @querySelectorAll('ui-typeahead-item')
-        _.each items, (i) ->
+        
+        if item
+          @.setAttribute 'selected',''
+        else
+          @.removeAttribute 'selected'
+
+        _.each items, (i) =>
           if i is item
+            
+            return @clear() if @.hasAttribute('selected') and i.hasAttribute('selected')
+            
+We set the attributes for the selected item including the top incase the consumer would like to overlay the 
+selection over the original input box
+
             i.setAttribute 'selected', ''
             i.setAttribute 'focused', ''
+            i.style.top = "-#{@$.input.clientHeight-1}px"
+
           else
             i.removeAttribute 'selected'
             i.removeAttribute 'focused'
@@ -47,12 +69,14 @@ Selects the provided `ui-typeahead-item`, while clear is simply an alias for `se
         index = _.indexOf items, item
         @fire 'change', { item, index }
 
-      clear: -> selectItem null
+      clear: -> 
+        @selectItem null
+        
 
 ##Event Handlers
       
       focus: (evt) ->
-        @focused = true
+        @.classList.add 'focused'
 
 ### documentClick 
 
@@ -60,7 +84,7 @@ Since we stop click propagation from within our element, anything
 bubbling up to the document handler is outside us and should unfocus the element
 
       documentClick: (evt) ->
-        @focused = false 
+        @.classList.remove 'focused'
 
 ### click
 
@@ -82,16 +106,24 @@ is in fact different)
         items = @querySelectorAll('ui-typeahead-item')
         focusIndex = _.findIndex items, (i) -> i.hasAttribute 'focused'
 
-        if evt.which is 40 
+We pull the 'selected attribute off the typeahead' so on subsequent keypresses items can be seen
+after initial item selection
+
+        @.removeAttribute 'selected'
+
+        if evt.which is keys.down 
           items[focusIndex]?.removeAttribute 'focused'
           items[ (focusIndex+1)%items.length ]?.setAttribute 'focused', ''
-        else if evt.which is 38
+        
+        else if evt.which is keys.up
           items[focusIndex]?.removeAttribute 'focused'
           focusIndex = items.length if focusIndex <= 0
           items[focusIndex-1]?.setAttribute 'focused', ''
-        else if evt.which in [13, 9]
+        
+        else if evt.which in [ keys.enter, keys.tab ]
           @selectItem items[focusIndex]
-        else if evt.which is 27
+        
+        else if evt.which is keys.escape
           items[focusIndex]?.focused = false
           @selectItem null
           @fire 'inputChange', { value: null }
@@ -120,6 +152,9 @@ and would trigger even when clicking results withint the ui-typeahead)
         @addEventListener 'focus', @focus
         @addEventListener 'keyup', @keyup
         window.addEventListener 'click', (evt) => @documentClick(evt)
+
+        @$.results.style.top = "#{@$.input.clientHeight}px"
+
 
 ### detached
 
