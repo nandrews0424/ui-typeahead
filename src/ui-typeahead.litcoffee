@@ -131,6 +131,13 @@ after initial item selection
           @debouncedKeyPress(evt)
 
 
+      dataChanged: (oldVal, newVal) ->
+        # if we're binding data through, we'll assume the template is for this purpose
+        @querySelector('template').model = newVal
+        
+
+
+
 ##Polymer Lifecycle
 
 

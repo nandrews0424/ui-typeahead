@@ -33,7 +33,7 @@
       }
 
       ui-typeahead-item[selected] {
-        background: #E4F3F8;
+        background:#fff;
       }
 
       ui-typeahead[selected] ui-typeahead-item {
@@ -71,8 +71,6 @@
       
       <ui-typeahead icon="fa-search" placeholder="This is a typeahead" debounce="200">
 
-
-
         <!-- dynamically templated items -->         
         <template id="typeahead-template" repeat="{{items}}">
           <ui-typeahead-item>
@@ -81,6 +79,19 @@
         </template>
 
       </ui-typeahead>
+
+
+      <ui-typeahead style="display:none" icon="fa-search" placeholder="This is a typeahead" debounce="200">
+
+        <template id="typeahead-template">
+          <ui-typeahead-item>
+            <span><i class="fa {{icon}}"></i> {{ text }}</span>
+          </ui-typeahead-item>
+        </template>
+
+      </ui-typeahead>
+
+
 
 
 
