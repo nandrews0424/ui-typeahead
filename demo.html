@@ -42,7 +42,6 @@
 
       ui-typeahead[selected] ui-typeahead-item[selected] {
         display:block;
-        
         position: absolute;
         left:0;
         right:0;
@@ -72,6 +71,8 @@
       
       <ui-typeahead icon="fa-search" placeholder="This is a typeahead" debounce="200">
 
+
+
         <!-- dynamically templated items -->         
         <template id="typeahead-template" repeat="{{items}}">
           <ui-typeahead-item>
@@ -80,6 +81,11 @@
         </template>
 
       </ui-typeahead>
+
+
+
+
+
 
       <template id="selected-item" bind="{{item}}">
         <div>

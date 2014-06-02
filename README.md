@@ -25,9 +25,6 @@ Typeahead control that handles the common typeahead functionality by the followi
   in the `ui-typeahead-items`, and `change` which fires when the selected item changes
 
 
-TODO: add height calculation for placing the results
-
-
 
 
 

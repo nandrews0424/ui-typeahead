@@ -15,7 +15,7 @@
     "gulp-concat": "",
     "vulcanize": "",
     "express": "",
-    "ui-input": "git://github.com/wballard/ui-input",
+    "ui-input": "git://github.com/Custom-Elements/ui-input",
     "lodash": "^2.4.1"
   },
   "license": "MIT",
