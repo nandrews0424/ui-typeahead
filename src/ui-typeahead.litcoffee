@@ -52,7 +52,7 @@ Selects the provided `ui-typeahead-item`, while clear is simply an alias for `se
         _.each items, (i) =>
           if i is item
             
-            return @clear() if @.hasAttribute('selected') and i.hasAttribute('selected')
+            return @clear(false) if @.hasAttribute('selected') and i.hasAttribute('selected')
             
 We set the attributes for the selected item including the top incase the consumer would like to overlay the 
 selection over the original input box
@@ -69,8 +69,9 @@ selection over the original input box
         index = _.indexOf items, item
         @fire 'change', { item, index }
 
-      clear: -> 
+      clear: (clearInput=true) -> 
         @selectItem null
+        @$.input.value = null if clearInput
         
 
 ##Event Handlers
