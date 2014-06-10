@@ -2,7 +2,7 @@
 
 <polymer-element name="ui-typeahead" attributes="text icon placeholder debounce data">
 <template>
-  <link rel="stylesheet" type="text/css" href="./ui-typeahead.css">
+  <link rel="stylesheet" type="text/css" href="./ui-typeahead.less">
   <ui-input id="input" icon="{{icon}}" placeholder="{{placeholder}}"></ui-input>  
   
   
@@ -14,15 +14,15 @@
 
 
 </template>
-<script src="./ui-typeahead.js"></script>
+<script src="./ui-typeahead.litcoffee"></script>
 </polymer-element>
 
 
 <!-- TODO: could support icons,  -->
 <polymer-element name="ui-typeahead-item" attributes="focused selected model value">
 <template>
-  <link rel="stylesheet" type="text/css" href="./ui-typeahead-item.css">
+  <link rel="stylesheet" type="text/css" href="./ui-typeahead-item.less">
   <content></content>
 </template>
-<script src="./ui-typeahead-item.js"></script>
+<script src="./ui-typeahead-item.litcoffee"></script>
 </polymer-element>
