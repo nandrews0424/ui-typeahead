@@ -1,24 +1,24 @@
+@import "../node_modules/ui-styles/variables";
+
 :host {
   display: block;
   position: relative;
+  box-sizing: border-box;
+}
 
-  .results {
-    position: absolute;
-    left: 0;
-    right: 0;
-    border-left: solid 1px #ccc;
-    border-right: solid 1px #ccc;
-    border-top: none;
-    background: #fff;
-  }
+#results {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border-top: solid 1px @color-border;
+  border-left: solid 1px @color-border;
+  border-right: solid 1px @color-border;
+}
 
-  ui-typeahead-item {
-    display:none;
-  }
-
-  &.focused {
-    ui-typeahead-item {
-      display:block;
-    }
+#selected {
+  &::before {
+    float:right;
+    content: "(change)";
   }
 }

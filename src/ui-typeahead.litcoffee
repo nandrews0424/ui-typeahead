@@ -10,13 +10,13 @@ Typeahead control that handles the common typeahead functionality by the followi
 
     _ = require('lodash')
     lastEmittedValue = null
-    keys = 
+    keys =
       up: 38
       down: 40
       enter: 13
       escape: 27
       tab: 9
-    
+
 
     Polymer 'ui-typeahead',
 
@@ -26,7 +26,7 @@ Typeahead control that handles the common typeahead functionality by the followi
 
 Change fires when the selected `ui-typeahead-item` changes.  It returns a detail object with 3 properties
 
-- `index` is index of the selected `ui-typeahead-item` or -1 if item was deselected.  If you have both static and data 
+- `index` is index of the selected `ui-typeahead-item` or -1 if item was deselected.  If you have both static and data
   bound items be aware that this index includes both and may not correspond directly to the index of the data you bound
 - `item` is the selected `ui-typeahead-item` DOM object or null if the selection was removed
 
@@ -36,50 +36,47 @@ inputChange fires when user changes the text input of the typehead.  This event 
 When the value is different that the previously emitted value.  The event detail contains a single `value` property with the input text, or null if it's been cleared.
 
 ##Methods
-      
+
 ### selectItem and clear
 
 Selects the provided `ui-typeahead-item`, while clear is simply an alias for `selectItem(null)`.
 
       selectItem: (item) ->
         items = @querySelectorAll('ui-typeahead-item')
-        
+
         if item
-          @.setAttribute 'selected',''
+          @setAttribute 'selected',''
         else
-          @.removeAttribute 'selected'
+          @removeAttribute 'selected'
+          @$.input.focus()
 
         _.each items, (i) =>
-          if i is item
-            
-            return @clear(false) if @.hasAttribute('selected') and i.hasAttribute('selected')
-            
-We set the attributes for the selected item including the top incase the consumer would like to overlay the 
-selection over the original input box
 
+This is safe, we'll toggle absolute only on being selected.
+
+          i.style.top = "-#{@clientHeight}px"
+
+          if i is item
+            return @clear(false) if @.hasAttribute('selected') and i.hasAttribute('selected')
             i.setAttribute 'selected', ''
             i.setAttribute 'focused', ''
-            i.style.top = "-#{@$.input.clientHeight-1}px"
-
           else
             i.removeAttribute 'selected'
             i.removeAttribute 'focused'
-          true
 
         index = _.indexOf items, item
         @fire 'change', { item, index }
 
-      clear: (clearInput=true) -> 
+      clear: (clearInput=true) ->
         @selectItem null
         @$.input.value = null if clearInput
-        
 
 ##Event Handlers
-      
+
       focus: (evt) ->
         @.classList.add 'focused'
 
-### documentClick 
+### documentClick
 
 Since we stop click propagation from within our element, anything
 bubbling up to the document handler is outside us and should unfocus the element
@@ -89,7 +86,7 @@ bubbling up to the document handler is outside us and should unfocus the element
 
 ### click
 
-Clicks on a ui-typeahead-item mark it as selected, all clicks within ui-typeahead 
+Clicks on a ui-typeahead-item mark it as selected, all clicks within ui-typeahead
 are swallowed at this point
 
       click: (evt) ->
@@ -99,9 +96,9 @@ are swallowed at this point
 
 ### keyup
 
-On keyup, the typeahead checks for control keypresses and otherwise fires the `debouncedKeyPress` 
-function, which debounces and then emits `change` (assuming that after the debounce the value 
-is in fact different) 
+On keyup, the typeahead checks for control keypresses and otherwise fires the `debouncedKeyPress`
+function, which debounces and then emits `change` (assuming that after the debounce the value
+is in fact different)
 
       keyup: (evt) ->
         items = @querySelectorAll('ui-typeahead-item')
@@ -110,20 +107,20 @@ is in fact different)
 We pull the 'selected attribute off the typeahead' so on subsequent keypresses items can be seen
 after initial item selection
 
-        @.removeAttribute 'selected'
+        @removeAttribute 'selected'
 
-        if evt.which is keys.down 
+        if evt.which is keys.down
           items[focusIndex]?.removeAttribute 'focused'
           items[ (focusIndex+1)%items.length ]?.setAttribute 'focused', ''
-        
+
         else if evt.which is keys.up
           items[focusIndex]?.removeAttribute 'focused'
           focusIndex = items.length if focusIndex <= 0
           items[focusIndex-1]?.setAttribute 'focused', ''
-        
+
         else if evt.which in [ keys.enter, keys.tab ]
           @selectItem items[focusIndex]
-        
+
         else if evt.which is keys.escape
           items[focusIndex]?.focused = false
           @selectItem null
@@ -135,18 +132,16 @@ after initial item selection
       dataChanged: (oldVal, newVal) ->
         # if we're binding data through, we'll assume the template is for this purpose
         @querySelector('template').model = newVal
-        
-
-
 
 ##Polymer Lifecycle
 
 
 ### attached
 
-Wiring up the various event handlers, including a document level click 
-handler that sets focused to false when clicking outside the control (actual blur wasn't working
-and would trigger even when clicking results withint the ui-typeahead)
+Wiring up the various event handlers, including a document level click handler
+that sets focused to false when clicking outside the control (actual blur
+wasn't working and would trigger even when clicking results withint the
+ui-typeahead)
 
       attached: ->
         @debounce ||= 300
@@ -161,12 +156,9 @@ and would trigger even when clicking results withint the ui-typeahead)
         @addEventListener 'keyup', @keyup
         window.addEventListener 'click', (evt) => @documentClick(evt)
 
-        @$.results.style.top = "#{@$.input.clientHeight}px"
-
-
 ### detached
 
-Unwiring the document level click handler. 
+Unwiring the document level click handler.
 
       detached: ->
         window.removeEventListener 'click', @documentClick
