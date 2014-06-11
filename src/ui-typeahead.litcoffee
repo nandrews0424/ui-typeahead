@@ -46,15 +46,13 @@ Selects the provided `ui-typeahead-item`, while clear is simply an alias for `se
 
         if item
           @setAttribute 'selected',''
+          @$.input.setAttribute 'hide', ''
         else
           @removeAttribute 'selected'
+          @$.input.removeAttribute 'hide'
           @$.input.focus()
 
         _.each items, (i) =>
-
-This is safe, we'll toggle absolute only on being selected.
-
-          i.style.top = "-#{@clientHeight}px"
           i.removeAttribute 'focused'
 
           if i is item
