@@ -55,14 +55,13 @@ Selects the provided `ui-typeahead-item`, while clear is simply an alias for `se
 This is safe, we'll toggle absolute only on being selected.
 
           i.style.top = "-#{@clientHeight}px"
+          i.removeAttribute 'focused'
 
           if i is item
             return @clear(false) if @.hasAttribute('selected') and i.hasAttribute('selected')
             i.setAttribute 'selected', ''
-            i.setAttribute 'focused', ''
           else
             i.removeAttribute 'selected'
-            i.removeAttribute 'focused'
 
         index = _.indexOf items, item
         @fire 'change', { item, index }
