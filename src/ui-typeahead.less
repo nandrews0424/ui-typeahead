@@ -13,6 +13,7 @@
 :host([selected]) {
   #results {
     top: 0;
+    background-color: transparent;
   }
 }
 
@@ -25,6 +26,7 @@
   border-left: solid 1px @color-border;
   border-right: solid 1px @color-border;
   .transition(top @transition);
+  overflow-y: scroll;
 }
 
 #selected {

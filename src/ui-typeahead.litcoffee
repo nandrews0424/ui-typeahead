@@ -125,6 +125,22 @@ after initial item selection
         else
           @debouncedKeyPress(evt)
 
+Size the results panel so that it doesn't fall off the page, instead -- make it
+scroll.
+
+        bottom = window.scrollY + window.innerHeight
+        top = @$.results.getBoundingClientRect().top
+        height = @$.results.scrollHeight
+        if (top + height) > bottom
+          maxHeight = bottom - top
+          @$.results.style.maxHeight = "#{maxHeight}px"
+          if @querySelector('[focused]')?.offsetTop > maxHeight
+            @$.results.scrollTop = @querySelector('[focused]')?.offsetTop
+          if @querySelector('[focused]')?.offsetTop < @$.results.scrollTop
+            @$.results.scrollTop = @querySelector('[focused]')?.offsetTop
+        else
+          @$.results.style.maxHeight = ''
+
 
       dataChanged: (oldVal, newVal) ->
         # if we're binding data through, we'll assume the template is for this purpose
