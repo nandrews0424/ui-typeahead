@@ -96,6 +96,7 @@
 
         typeahead.addEventListener('change', function(e) {
           console.log('value changed', e.detail);
+          console.log('text is', typeahead.text)
           document.querySelector('#selected-item').model = { item: items[e.detail.index] };
           Platform.performMicrotaskCheckpoint();
         });

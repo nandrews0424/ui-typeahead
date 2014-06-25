@@ -4,7 +4,7 @@
 <polymer-element name="ui-typeahead" attributes="text icon placeholder debounce data">
 <template>
   <link rel="stylesheet" type="text/css" href="./ui-typeahead.less">
-  <ui-input fadeout id="input" icon="{{icon}}" placeholder="{{placeholder}}"></ui-input>
+  <ui-input fadeout id="input" icon="{{icon}}" placeholder="{{placeholder}}" value="{{text}}"></ui-input>
 
   <section id="results">
     <content select="ui-typeahead-item">
