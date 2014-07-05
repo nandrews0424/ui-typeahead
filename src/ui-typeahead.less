@@ -4,7 +4,6 @@
   display: block;
   position: relative;
   box-sizing: border-box;
-  border: 1px solid rgba(0, 0, 0, 0.04);
   ui-input {
     border: 0;
   }
@@ -24,9 +23,8 @@
   left: 0;
   right: 0;
   background-color: white;
-  border-left: solid 1px @color-border;
-  border-right: solid 1px @color-border;
-  .transition(top @transition);
+  .border;
+  .transition(@transition);
   overflow-y: scroll;
   z-index: 999;
 }
