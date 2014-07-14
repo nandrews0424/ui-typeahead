@@ -20,18 +20,31 @@ Typeahead control that handles the common typeahead functionality by the followi
 
     Polymer 'ui-typeahead',
 
+##Attributes
+###value
+This is the data value bound picked currently.
+
+      valueChanged: ->
+        @fire 'change', @value
+        selectedTemplate = @querySelector 'selected template'
+        if selectedTemplate
+          selectedTemplate.setAttribute 'bind', '{{value}}'
+          selectedTemplate.model = value: @value
+        if @value
+          @$.selected.classList.add 'open'
+          @$.input.classList.add 'close'
+          @$.results.classList.remove 'open'
+        else
+          @$.selected.classList.remove 'open'
+          @$.input.classList.remove 'close'
+          @$.results.classList.add 'open'
+
 ##Events
 
 ### change
-
-Change fires when the selected `ui-typeahead-item` changes.  It returns a detail object with 3 properties
-
-- `index` is index of the selected `ui-typeahead-item` or -1 if item was deselected.  If you have both static and data
-  bound items be aware that this index includes both and may not correspond directly to the index of the data you bound
-- `item` is the selected `ui-typeahead-item` DOM object or null if the selection was removed
+Change fires when the selected `ui-typeahead-item` changes.
 
 ### inputChange
-
 inputChange fires when user changes the text input of the typehead.  This event is debounced per the debounce property (in milliseconds) and only fires
 When the value is different that the previously emitted value.  The event detail contains a single `value` property with the input text, or null if it's been cleared.
 
@@ -41,28 +54,11 @@ When the value is different that the previously emitted value.  The event detail
 
 Selects the provided `ui-typeahead-item`, while clear is simply an alias for `selectItem(null)`.
 
+This will hijack the template used to render each display item, and create a
+display ready clone.
+
       selectItem: (item) ->
-        items = @querySelectorAll('ui-typeahead-item')
-
-        if item
-          @setAttribute 'selected',''
-          @$.input.setAttribute 'hide', ''
-        else
-          @removeAttribute 'selected'
-          @$.input.removeAttribute 'hide'
-          @$.input.focus()
-
-        _.each items, (i) =>
-          i.removeAttribute 'focused'
-
-          if i is item
-            return @clear(false) if @.hasAttribute('selected') and i.hasAttribute('selected')
-            i.setAttribute 'selected', ''
-          else
-            i.removeAttribute 'selected'
-
-        index = _.indexOf items, item
-        @fire 'change', { item, index }
+        @value = item?.templateInstance?.model
 
       clear: (clearInput=true) ->
         @selectItem null
@@ -70,8 +66,8 @@ Selects the provided `ui-typeahead-item`, while clear is simply an alias for `se
 
 ##Event Handlers
 
-      focus: (evt) ->
-        @.classList.add 'focused'
+      inputChanged: ->
+        @$.results.classList.add 'open'
 
 ### documentClick
 
@@ -86,10 +82,15 @@ bubbling up to the document handler is outside us and should unfocus the element
 Clicks on a ui-typeahead-item mark it as selected, all clicks within ui-typeahead
 are swallowed at this point
 
-      click: (evt) ->
+      clickResults: (evt) ->
         evt.stopPropagation()
-        if evt.target in @querySelectorAll('ui-typeahead-item')
+        if evt.target.tagName is "UI-TYPEAHEAD-ITEM"
           @selectItem evt.target
+
+      clickSelected: (evt) ->
+        @$.selected.classList.remove 'open'
+        @$.input.classList.remove 'close'
+        @$.input.focus()
 
 ### keyup
 
@@ -141,13 +142,7 @@ scroll.
         else
           @$.results.style.maxHeight = ''
 
-
-      dataChanged: (oldVal, newVal) ->
-        # if we're binding data through, we'll assume the template is for this purpose
-        @querySelector('template').model = newVal
-
 ##Polymer Lifecycle
-
 
 ### attached
 
@@ -158,15 +153,13 @@ ui-typeahead)
 
       attached: ->
         @debounce ||= 300
-        @debouncedKeyPress = _.debounce ->
+        @debouncedKeyPress = _.debounce =>
           if @$.input.value isnt lastEmittedValue
             lastEmittedValue = @$.input.value
             @fire 'inputChange', { value: @$.input.value }
+            @inputChanged()
         , @debounce
 
-        @addEventListener 'click', @click
-        @addEventListener 'focus', @focus
-        @addEventListener 'keyup', @keyup
         window.addEventListener 'click', (evt) => @documentClick(evt)
 
 ### detached

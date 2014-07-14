@@ -5,9 +5,8 @@
     <title>ui-typeahead</title>
     <script src="http://localhost:35729/livereload.js"></script>
     <script src="node_modules/polymer/platform.js"></script>
-    <link rel="stylesheet" href="node_modules/ui-fonts/font-awesome.less">
-    <link rel="stylesheet" href="node_modules/ui-fonts/font-awesome-styles.less">
-    <link rel="stylesheet" href="node_modules/ui-styles/ui-styles.less">
+    <link rel="import" href="node_modules/ui-fonts/fonts.html">
+    <link rel="import" href="node_modules/ui-styles/ui-styles.html">
     <link rel="import" href="node_modules/polymer/polymer.html">
     <link rel="import" href="src/ui-typeahead.html">
 
@@ -17,20 +16,27 @@
       }
 
       ui-typeahead {
-        width: 50%;
+        width: 30em;
       }
 
     </style>
   </head>
-  <body unresolved>
-    <div id="holder" tile>
+  <body container unresolved>
 
-      <ui-typeahead icon="fa-search" placeholder="This is a typeahead" debounce="200">
+      <ui-typeahead icon="fa-search" placeholder="This is a typeahead">
+        <icon search></icon>
+        <selected>
+        <template>
+          <ui-typeahead-item>
+            <span><icon icon="{{icon}}"></icon> {{ text }}-</span>
+          </ui-typeahead-item>
+        </template>
+        </selected>
 
         <!-- dynamically templated items -->
         <template id="typeahead-template" repeat="{{items}}">
           <ui-typeahead-item>
-            <span><i class="fa {{icon}}"></i> {{ text }}</span>
+            <span><icon icon="{{icon}}"></icon> {{ text }}</span>
           </ui-typeahead-item>
         </template>
 
@@ -40,7 +46,7 @@
       <template id="selected-item" bind="{{item}}">
         <div>
           <h3>
-            {{text}}
+            <icon icon="{{icon}}"></icon>&nbsp;{{text}}
           </h3>
           <p>
             {{detail}}
@@ -48,7 +54,6 @@
         </div>
       </template>
 
-    </div>
     <script>
 
       document.addEventListener('polymer-ready', function() {
@@ -62,21 +67,21 @@
 
           items = [
             {
-              icon: 'fa-eye',
+              icon: 'eye',
               text: 'Hello ' + prefix,
               detail: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. " },
             {
-              icon: 'fa-car',
+              icon: 'car',
               text: 'Goodbye ' + prefix,
               detail: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt."
             },
             {
-              icon: 'fa-check',
+              icon: 'check',
               text: 'Another ' + prefix,
               detail: "Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem."
             },
             {
-              icon: 'fa-plus',
+              icon: 'plus',
               text: 'The Final ' + prefix,
               detail: "Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? "
             }
@@ -95,10 +100,7 @@
         });
 
         typeahead.addEventListener('change', function(e) {
-          console.log('value changed', e.detail);
-          console.log('text is', typeahead.text)
-          document.querySelector('#selected-item').model = { item: items[e.detail.index] };
-          Platform.performMicrotaskCheckpoint();
+          document.querySelector('#selected-item').model = { item: e.detail };
         });
 
       });

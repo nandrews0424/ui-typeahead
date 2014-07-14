@@ -4,8 +4,44 @@
   display: block;
   position: relative;
   box-sizing: border-box;
-  ui-input {
-    border: 0;
+  #input {
+    .transition(@transition);
+    .transform-origin(50% 0%);
+    .transform(rotateX(0deg));
+    &.close {
+      .transform(rotateX(90deg));
+    }
+  }
+  #results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    .border;
+    overflow-y: scroll;
+    z-index: 999;
+    .transition(@transition);
+    .transform-origin(50% 0%);
+    .transform(rotateX(90deg));
+    &.open {
+      .transform(rotateX(0deg));
+    }
+  }
+  #selected {
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    .bottom-border;
+    .transition(@transition);
+    .backface-visibility(hidden);
+    .transform(rotateX(180deg));
+    &.open {
+      .transform(rotateX(0deg));
+    }
   }
 }
 
@@ -14,24 +50,5 @@
     top: 0;
     overflow: visible;
     background-color: transparent;
-  }
-}
-
-#results {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background-color: white;
-  .border;
-  .transition(@transition);
-  overflow-y: scroll;
-  z-index: 999;
-}
-
-#selected {
-  &::before {
-    float:right;
-    content: "(change)";
   }
 }

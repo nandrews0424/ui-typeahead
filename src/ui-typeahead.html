@@ -1,24 +1,27 @@
 <link rel="import" href="../node_modules/ui-input/src/ui-input.html" />
+<link rel="import" href="./ui-typeahead-item.html" />
 
 <link rel="stylesheet" type="text/css" href="./ui-typeahead-light.less">
-<polymer-element name="ui-typeahead" attributes="text icon placeholder debounce data">
+<polymer-element name="ui-typeahead" attributes="placeholder value"
+  on-focus="{{focus}}"
+  on-keyup="{{keyup}}"
+>
 <template>
   <link rel="stylesheet" type="text/css" href="./ui-typeahead.less">
-  <ui-input fadeout id="input" icon="{{icon}}" placeholder="{{placeholder}}" value="{{text}}"></ui-input>
 
-  <section id="results">
+  <ui-input id="input" placeholder="{{placeholder}}" value="{{text}}"
+    <content select="icon"></content>
+  </ui-input>
+
+  <section id="selected" layout horizontal center on-click="{{clickSelected}}">
+    <content select="selected"></content>
+  </section>
+
+  <section id="results" on-click="{{clickResults}}">
     <content select="ui-typeahead-item">
     </content>
   </section>
 
 </template>
 <script src="./ui-typeahead.litcoffee"></script>
-</polymer-element>
-
-<polymer-element name="ui-typeahead-item" attributes="focused selected model value">
-<template>
-  <link rel="stylesheet" type="text/css" href="./ui-typeahead-item.less">
-  <content></content>
-</template>
-<script src="./ui-typeahead-item.litcoffee"></script>
 </polymer-element>
