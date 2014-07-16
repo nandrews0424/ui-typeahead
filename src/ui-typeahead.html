@@ -9,8 +9,9 @@
 <template>
   <link rel="stylesheet" type="text/css" href="./ui-typeahead.less">
 
-  <ui-input id="input" placeholder="{{placeholder}}" value="{{text}}"
+  <ui-input id="input" placeholder="{{placeholder}}" value="{{text}}">
     <content select="icon"></content>
+    <content select="item"></content>
   </ui-input>
 
   <section id="selected" layout horizontal center on-click="{{clickSelected}}">
