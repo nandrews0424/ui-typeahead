@@ -15,6 +15,7 @@ Typeahead control that handles the common typeahead functionality by the followi
       down: 40
       enter: 13
       escape: 27
+      backspace: 8
       tab: 9
 
 
@@ -25,19 +26,20 @@ Typeahead control that handles the common typeahead functionality by the followi
 This is the data value bound picked currently.
 
       valueChanged: ->
-        @fire 'change', @value
-        selectedTemplate = @querySelector 'selected template'
+        selectedTemplate = @querySelector 'template[value]'
         if selectedTemplate
-          selectedTemplate.setAttribute 'bind', '{{value}}'
+          if Array.isArray @value
+            selectedTemplate.setAttribute 'repeat', '{{value}}'
+          else
+            selectedTemplate.setAttribute 'if', '{{value}}'
+            selectedTemplate.setAttribute 'bind', '{{value}}'
+            if @value
+              @$.input.setAttribute 'placeholder', ''
+            else
+              @$.input.setAttribute 'placeholder', '{{placeholder}}'
           selectedTemplate.model = value: @value
-        if @value
-          @$.selected.classList.add 'open'
-          @$.input.classList.add 'close'
-          @$.results.classList.remove 'open'
-        else
-          @$.selected.classList.remove 'open'
-          @$.input.classList.remove 'close'
-          @$.results.classList.add 'open'
+        @close()
+        @fire 'change', @value
 
 ##Events
 
@@ -50,35 +52,54 @@ When the value is different that the previously emitted value.  The event detail
 
 ##Methods
 
+### open and close
+
+      focus: ->
+        @$.input.focus()
+
+      open: ->
+        @$.results.classList.add 'open'
+
+      close: ->
+        @$.results.classList.remove 'open'
+        @$.input.value = null
+
 ### selectItem and clear
-
-Selects the provided `ui-typeahead-item`, while clear is simply an alias for `selectItem(null)`.
-
-This will hijack the template used to render each display item, and create a
-display ready clone.
+Selecting an item means we pull in the data from the rendered `ui-typeahead-item`
+and either settting the value or buffering it in an array
 
       selectItem: (item) ->
-        @value = item?.templateInstance?.model
+        if @multiselect?
+          if not Array.isArray(@value)
+            @value = []
+          @value.push item?.templateInstance?.model
+        else
+          @value = item?.templateInstance?.model
+        @$.input.value = null
 
-      clear: (clearInput=true) ->
-        @selectItem null
-        @$.input.value = null if clearInput
+      clear: () ->
+        if @multiselect?
+          if not Array.isArray(@value)
+            @value = []
+          if @value.length
+            @value.pop()
+        else
+          @value = null
+        @$.input.value = null
 
 ##Event Handlers
 
       inputChanged: ->
-        @$.results.classList.add 'open'
+        @open()
 
 ### documentClick
-
 Since we stop click propagation from within our element, anything
 bubbling up to the document handler is outside us and should unfocus the element
 
       documentClick: (evt) ->
-        @.classList.remove 'focused'
+        @close()
 
 ### click
-
 Clicks on a ui-typeahead-item mark it as selected, all clicks within ui-typeahead
 are swallowed at this point
 
@@ -87,25 +108,15 @@ are swallowed at this point
         if evt.target.tagName is "UI-TYPEAHEAD-ITEM"
           @selectItem evt.target
 
-      clickSelected: (evt) ->
-        @$.selected.classList.remove 'open'
-        @$.input.classList.remove 'close'
-        @$.input.focus()
-
 ### keyup
-
 On keyup, the typeahead checks for control keypresses and otherwise fires the `debouncedKeyPress`
 function, which debounces and then emits `change` (assuming that after the debounce the value
 is in fact different)
 
       keyup: (evt) ->
+        @open()
         items = @querySelectorAll('ui-typeahead-item')
         focusIndex = _.findIndex items, (i) -> i.hasAttribute 'focused'
-
-We pull the 'selected attribute off the typeahead' so on subsequent keypresses items can be seen
-after initial item selection
-
-        @removeAttribute 'selected'
 
         if evt.which is keys.down
           items[focusIndex]?.removeAttribute 'focused'
@@ -120,9 +131,11 @@ after initial item selection
           @selectItem items[focusIndex]
 
         else if evt.which is keys.escape
-          items[focusIndex]?.focused = false
-          @selectItem null
+          @close()
           @fire 'inputChange', { value: null }
+        else if evt.which is keys.backspace
+          if not @$.input.value
+            @clear()
         else
           @debouncedKeyPress(evt)
 
@@ -145,7 +158,6 @@ scroll.
 ##Polymer Lifecycle
 
 ### attached
-
 Wiring up the various event handlers, including a document level click handler
 that sets focused to false when clicking outside the control (actual blur
 wasn't working and would trigger even when clicking results withint the
@@ -161,6 +173,10 @@ ui-typeahead)
         , @debounce
 
         window.addEventListener 'click', (evt) => @documentClick(evt)
+
+      publish:
+        value:
+          reflect: true
 
 ### detached
 

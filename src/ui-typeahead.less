@@ -29,27 +29,4 @@
       .transform(rotateX(0deg));
     }
   }
-  #selected {
-    box-sizing: border-box;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    .bottom-border;
-    .transition(@transition);
-    .backface-visibility(hidden);
-    .transform(rotateX(180deg));
-    &.open {
-      .transform(rotateX(0deg));
-    }
-  }
-}
-
-:host([selected]) {
-  #results {
-    top: 0;
-    overflow: visible;
-    background-color: transparent;
-  }
 }

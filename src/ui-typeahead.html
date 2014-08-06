@@ -2,26 +2,23 @@
 <link rel="import" href="./ui-typeahead-item.html" />
 
 <link rel="stylesheet" type="text/css" href="./ui-typeahead-light.less">
-<polymer-element name="ui-typeahead" attributes="placeholder value"
+<polymer-element name="ui-typeahead" attributes="placeholder value multiselect"
   on-focus="{{focus}}"
   on-keyup="{{keyup}}"
 >
 <template>
   <link rel="stylesheet" type="text/css" href="./ui-typeahead.less">
 
-  <ui-input id="input" placeholder="{{placeholder}}" value="{{text}}">
+  <ui-input id="input" placeholder="{{placeholder}}" value="{{text}}" on-click="{{focus}}">
     <content select="icon"></content>
-    <content select="item"></content>
+    <content select="value"></content>
   </ui-input>
-
-  <section id="selected" layout horizontal center on-click="{{clickSelected}}">
-    <content select="selected"></content>
-  </section>
 
   <section id="results" on-click="{{clickResults}}">
     <content select="ui-typeahead-item">
     </content>
   </section>
+
 
 </template>
 <script src="./ui-typeahead.litcoffee"></script>
