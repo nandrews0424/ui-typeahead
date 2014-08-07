@@ -115,6 +115,13 @@
           document.querySelector('#selected-item').model = { item: e.detail };
         });
 
+        //adventures in data binding
+        document.querySelector('#multiple').value = window.things = [
+          {icon: 'paw', text: 'cat'},
+          {icon: 'paw', text: 'dog'},
+          {icon: 'paw', text: 'pig'}
+        ];
+
       });
 
     </script>
