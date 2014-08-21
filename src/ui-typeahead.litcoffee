@@ -4,7 +4,7 @@ Typeahead control that handles the common typeahead functionality by the followi
 
 - Captures and debouncing user input per the `debounce` attribute
 - Allows keypress and click navigation and selection of provided child `ui-typeahead-item` elements
-- Publishes two events, `inputChange` that the containing page can use to retrieve the relevant data and template
+- Publishes two events, `inputchange` that the containing page can use to retrieve the relevant data and template
   in the `ui-typeahead-items`, and `change` which fires when the selected item changes
 
 
@@ -46,7 +46,7 @@ This is the data value bound picked currently.
 ### change
 Change fires when the selected `ui-typeahead-item` changes.
 
-### inputChange
+### inputchange
 inputChange fires when user changes the text input of the typehead.  This event is debounced per the debounce property (in milliseconds) and only fires
 When the value is different that the previously emitted value.  The event detail contains a single `value` property with the input text, or null if it's been cleared.
 
@@ -90,6 +90,11 @@ and either settting the value or buffering it in an array
 ##Event Handlers
 
       inputChanged: ->
+        @async ->
+          items = @querySelectorAll('ui-typeahead-item')
+          focusIndex = _.findIndex items, (i) -> i.hasAttribute 'focused'
+          items[focusIndex]?.removeAttribute 'focused'
+          items[0]?.setAttribute 'focused', ''
         @open()
 
 ### documentClick
@@ -132,7 +137,7 @@ is in fact different)
 
         else if evt.which is keys.escape
           @close()
-          @fire 'inputChange', { value: null }
+          @fire 'inputchange', { value: null }
         else if evt.which is keys.backspace
           if not @$.input.value
             @clear()
@@ -168,7 +173,7 @@ ui-typeahead)
         @debouncedKeyPress = _.debounce =>
           if @$.input.value isnt lastEmittedValue
             lastEmittedValue = @$.input.value
-            @fire 'inputChange', { value: @$.input.value }
+            @fire 'inputchange', { value: @$.input.value }
             @inputChanged()
         , @debounce
 
