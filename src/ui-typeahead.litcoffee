@@ -50,6 +50,12 @@ Change fires when the selected `ui-typeahead-item` changes.
 inputChange fires when user changes the text input of the typehead.  This event is debounced per the debounce property (in milliseconds) and only fires
 When the value is different that the previously emitted value.  The event detail contains a single `value` property with the input text, or null if it's been cleared.
 
+###itemadded
+With `multiselect`, this fires when a new item is added, with the item as detail.
+
+###itemremoved
+With `multiselect`, this fires when a new item is removed, with the item as detail.
+
 ##Methods
 
 ### open and close
@@ -73,6 +79,7 @@ and either settting the value or buffering it in an array
           if not Array.isArray(@value)
             @value = []
           @value.push item?.templateInstance?.model
+          @fire 'itemadded', item?.templateInstance?.model
         else
           @value = item?.templateInstance?.model
         @$.input.value = null
@@ -82,7 +89,8 @@ and either settting the value or buffering it in an array
           if not Array.isArray(@value)
             @value = []
           if @value.length
-            @value.pop()
+            item = @value.pop()
+            @fire 'itemremoved', item
         else
           @value = null
         @$.input.value = null
@@ -159,6 +167,14 @@ scroll.
             @$.results.scrollTop = @querySelector('[focused]')?.offsetTop
         else
           @$.results.style.maxHeight = ''
+
+###remove
+Fired by some elements, see if we can remove the detail data.
+
+      remove: (evt, detail) ->
+        if @multiselect?
+          _.remove @value, detail
+          @fire 'itemremoved', detail
 
 ##Polymer Lifecycle
 
