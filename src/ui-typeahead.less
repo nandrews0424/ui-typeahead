@@ -2,9 +2,13 @@
 @import "../node_modules/ui-styles/borders";
 
 :host {
-  display: block;
-  position: relative;
   box-sizing: border-box;
+  display: inline-flex;
+  justify-content:flex-start;
+  position: relative;
+  width: 100%;
+  background-color: transparent;
+  color: @color-text;
   #input {
     .transition(@transition);
     .transform-origin(50% 0%);
