@@ -85,15 +85,24 @@ and either settting the value or buffering it in an array
         @$.input.value = null
 
       clear: () ->
+        @$.input.value = null
         if @multiselect?
           if not Array.isArray(@value)
             @value = []
           if @value.length
+            item = @value[@value.length-1]
+            for value in @querySelectorAll('value')
+              console.log value
+              if value.templateInstance.model is item
+                for element in value.querySelectorAll('*')
+                  if element.fireRemove
+                    element.fireRemove()
+                    return
+            #fallthrough to here if the item didn't claim it with fireRemove
             item = @value.pop()
             @fire 'itemremoved', item
         else
           @value = null
-        @$.input.value = null
 
 ##Event Handlers
 
@@ -127,7 +136,6 @@ function, which debounces and then emits `change` (assuming that after the debou
 is in fact different)
 
       keyup: (evt) ->
-        @open()
         items = @querySelectorAll('ui-typeahead-item')
         focusIndex = _.findIndex items, (i) -> i.hasAttribute 'focused'
 
