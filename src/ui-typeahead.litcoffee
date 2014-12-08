@@ -25,7 +25,9 @@ Typeahead control that handles the common typeahead functionality by the followi
 ###value
 This is the data value bound picked currently.
 
-      valueChanged: ->
+      valueChanged: (oldValue, newValue) ->
+        if @value is newValue
+          return
         selectedTemplate = @querySelector 'template[value]'
         if selectedTemplate
           if Array.isArray @value
@@ -213,3 +215,7 @@ Unwiring the document level click handler.
 
       detached: ->
         window.removeEventListener 'click', @documentClick
+
+      publish:
+        value:
+          reflect: true
