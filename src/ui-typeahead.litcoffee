@@ -26,8 +26,6 @@ Typeahead control that handles the common typeahead functionality by the followi
 This is the data value bound picked currently.
 
       valueChanged: (oldValue, newValue) ->
-        if @value is newValue
-          return
         selectedTemplate = @querySelector 'template[value]'
         if selectedTemplate
           if Array.isArray @value
@@ -42,6 +40,11 @@ This is the data value bound picked currently.
           selectedTemplate.model = value: @value
         @close()
         @fire 'change', @value
+
+###valueFilter
+This function, if present, maps data bound items from the
+selection list so that the `value` isn't just limited to exactly the values
+in the dropdown list.
 
 ##Events
 
@@ -77,13 +80,14 @@ Selecting an item means we pull in the data from the rendered `ui-typeahead-item
 and either settting the value or buffering it in an array
 
       selectItem: (item) ->
+        selectedValue = (@valueFilter or (x) -> x)(item?.templateInstance?.model)
         if @multiselect?
           if not Array.isArray(@value)
             @value = []
-          @value.push item?.templateInstance?.model
-          @fire 'itemadded', item?.templateInstance?.model
+          @value.push selectedValue
+          @fire 'itemadded', selectedValue
         else
-          @value = item?.templateInstance?.model
+          @value = selectedValue
         @$.input.value = null
 
       clear: () ->
@@ -94,7 +98,6 @@ and either settting the value or buffering it in an array
           if @value.length
             item = @value[@value.length-1]
             for value in @querySelectorAll('value')
-              console.log value
               if value.templateInstance.model is item
                 for element in value.querySelectorAll('*')
                   if element.fireRemove
@@ -204,10 +207,6 @@ ui-typeahead)
         , @debounce
 
         window.addEventListener 'click', (evt) => @documentClick(evt)
-
-      publish:
-        value:
-          reflect: true
 
 ### detached
 
