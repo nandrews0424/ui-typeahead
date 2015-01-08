@@ -1,13 +1,11 @@
 #ui-typeahead
-
 Typeahead control that handles the common typeahead functionality by the following:
-
 - Captures and debouncing user input per the `debounce` attribute
 - Allows keypress and click navigation and selection of provided child `ui-typeahead-item` elements
 - Publishes two events, `inputchange` that the containing page can use to retrieve the relevant data and template
   in the `ui-typeahead-items`, and `change` which fires when the selected item changes
 
-    require '../node_modules/ui-styles/polyfill.js'
+    # require '../node_modules/ui-styles/polyfill.js'
 
     lastEmittedValue = null
     keys =
