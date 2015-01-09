@@ -171,6 +171,7 @@ is in fact different)
           @clear() if not @$.input.value and backspaceBufferCount == 1
           backspaceBufferCount += 1
         else
+          backspaceBufferCount = 0
           @debouncedKeyPress(evt)
 
 Size the results panel so that it doesn't fall off the page, instead -- make it
