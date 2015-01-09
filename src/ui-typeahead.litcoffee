@@ -168,8 +168,8 @@ is in fact different)
           @close()
           @fire 'inputchange', { value: null }
         else if evt.which is keys.backspace
-          if not @$.input.value
-            @clear()
+          @clear() if not @$.input.value and backspaceBufferCount == 1
+          backspaceBufferCount += 1
         else
           @debouncedKeyPress(evt)
 
