@@ -152,16 +152,7 @@ is in fact different)
         items = @querySelectorAll('ui-typeahead-item')
         focusIndex = items.array().findIndex (i) -> i.hasAttribute 'focused'
 
-        if evt.which is keys.down
-          items[focusIndex]?.removeAttribute 'focused'
-          items[ (focusIndex+1)%items.length ]?.setAttribute 'focused', ''
-
-        else if evt.which is keys.up
-          items[focusIndex]?.removeAttribute 'focused'
-          focusIndex = items.length if focusIndex <= 0
-          items[focusIndex-1]?.setAttribute 'focused', ''
-
-        else if evt.which in [ keys.enter, keys.tab ]
+        if evt.which in [ keys.enter, keys.tab ]
           @selectItem items[focusIndex] if @$.input.value
 
         else if evt.which is keys.escape
@@ -189,6 +180,28 @@ scroll.
             @$.results.scrollTop = @querySelector('[focused]')?.offsetTop
         else
           @$.results.style.maxHeight = ''
+
+### keydown
+Let's let the user hold a key like up/down to nav the list
+Also make sure items scroll into view for long lists
+
+      keydown: (evt) ->
+        return unless evt.which in [keys.down,keys.up]
+        items = [].slice.call(@querySelectorAll('ui-typeahead-item'))
+        focused = @querySelectorAll('ui-typeahead-item[focused]')
+        focusIndex = items.indexOf focused[0]
+
+        if evt.which is keys.down
+          items[focusIndex]?.removeAttribute 'focused'
+          items[ (focusIndex+1)%items.length ]?.setAttribute 'focused', ''
+
+          if items[focusIndex]? && items[focusIndex].offsetTop + items[focusIndex].offsetHeight >= @$.results.offsetHeight
+            @$.results.scrollTop += items[focusIndex].offsetHeight
+
+        else if evt.which is keys.up
+          items[focusIndex]?.removeAttribute 'focused'
+          focusIndex = items.length if focusIndex <= 0
+          items[focusIndex-1]?.setAttribute 'focused', ''          
 
 ###remove
 Fired by some elements, see if we can remove the detail data.
