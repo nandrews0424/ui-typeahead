@@ -80,7 +80,7 @@ and either settting the value or buffering it in an array
 
       selectItem: (item) ->
         # allow typeahead items to be non-selectable: group headers, messages alternately use diffent element tags
-        return if item.hasAttribute "label"
+        return if !item or item.hasAttribute "label"
 
         selectedValue = (@valueFilter or (x) -> x)(item?.templateInstance?.model)
         if @multiselect?
@@ -90,6 +90,7 @@ and either settting the value or buffering it in an array
           @fire 'itemadded', selectedValue
         else
           @value = selectedValue
+          @$.input.blur()
         @clearValue()
 
       clear: () ->
