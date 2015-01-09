@@ -8,6 +8,7 @@ Typeahead control that handles the common typeahead functionality by the followi
     require '../node_modules/ui-styles/polyfill.js'
 
     lastEmittedValue = null
+    backspaceBufferCount = 0
     keys =
       up: 38
       down: 40
@@ -110,9 +111,10 @@ and either settting the value or buffering it in an array
         else
           @value = null
 
-### Make sure we clear the value and its hidden backing state
+### Make sure we clear the value and its hidden backing state + the backspace buffer          
       
       clearValue: ->
+        backspaceBufferCount = 0
         @$.input.value = null
         lastEmittedValue = null
 
@@ -160,7 +162,7 @@ is in fact different)
           items[focusIndex-1]?.setAttribute 'focused', ''
 
         else if evt.which in [ keys.enter, keys.tab ]
-          @selectItem items[focusIndex]
+          @selectItem items[focusIndex] if @$.input.value
 
         else if evt.which is keys.escape
           @close()
