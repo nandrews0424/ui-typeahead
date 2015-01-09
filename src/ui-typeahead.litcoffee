@@ -78,6 +78,9 @@ Selecting an item means we pull in the data from the rendered `ui-typeahead-item
 and either settting the value or buffering it in an array
 
       selectItem: (item) ->
+        # allow typeahead items to be non-selectable: group headers, messages alternately use diffent element tags
+        return if item.hasAttribute "label"
+        
         selectedValue = (@valueFilter or (x) -> x)(item?.templateInstance?.model)
         if @multiselect?
           if not Array.isArray(@value)
