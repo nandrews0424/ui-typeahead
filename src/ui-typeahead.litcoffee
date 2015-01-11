@@ -209,7 +209,7 @@ Fired by some elements, see if we can remove the detail data.
 
       remove: (evt, detail) ->
         if @multiselect?
-          idx @value.indexOf detail
+          idx = @value.indexOf detail
           if idx > -1
             @value.splice idx, 1
           @fire 'itemremoved', detail
