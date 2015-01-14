@@ -112,8 +112,8 @@ and either settting the value or buffering it in an array
         else
           @value = null
 
-### Make sure we clear the value and its hidden backing state + the backspace buffer          
-      
+### Make sure we clear the value and its hidden backing state + the backspace buffer
+
       clearValue: ->
         backspaceBufferCount = 0
         @$.input.value = null
@@ -121,12 +121,13 @@ and either settting the value or buffering it in an array
 
 ##Event Handlers
 
-      inputChanged: ->
-        @async ->
-          focusedItem = @querySelector('ui-typeahead-item[focused]')
-          focusedItem?.removeAttribute 'focused'
-          @querySelectorAll('ui-typeahead-item')[0]?.setAttribute 'focused', ''
-        @open()
+      inputChanged: (evt) ->
+        evt.stopPropagation()
+        if @$.input.value
+          @open()
+          @fire 'inputchange', value: @$.input.value
+        else
+          @close()
 
 ### documentClick
 Since we stop click propagation from within our element, anything
@@ -145,26 +146,20 @@ are swallowed at this point
           @selectItem evt.target
 
 ### keyup
-On keyup, the typeahead checks for control keypresses and otherwise fires the `debouncedKeyPress`
-function, which debounces and then emits `change` (assuming that after the debounce the value
-is in fact different)
+On keyup, the typeahead checks for control keypresses.
 
       keyup: (evt) ->
-        items = @querySelectorAll('ui-typeahead-item')
-        focusIndex = items.array().findIndex (i) -> i.hasAttribute 'focused'
+        focusedItem = @querySelector('ui-typeahead-item[focused]')
 
         if evt.which in [ keys.enter, keys.tab ]
-          @selectItem items[focusIndex] if @$.input.value
-
+          @selectItem focusedItem
         else if evt.which is keys.escape
           @close()
-          @fire 'inputchange', { value: null }
         else if evt.which is keys.backspace
-          @clear() if not @$.input.value and backspaceBufferCount == 1
+          @clear() if not @$.input.value and backspaceBufferCount > 0
           backspaceBufferCount += 1
         else
           backspaceBufferCount = 0
-          @debouncedKeyPress(evt)
 
 Size the results panel so that it doesn't fall off the page, instead -- make it
 scroll.
@@ -189,20 +184,20 @@ Also make sure items scroll into view for long lists
       keydown: (evt) ->
         return unless evt.which in [keys.down,keys.up]
         items = [].slice.call(@querySelectorAll('ui-typeahead-item'))
-        focused = @querySelectorAll('ui-typeahead-item[focused]')
-        focusIndex = items.indexOf focused[0]
+        focused = @querySelector('ui-typeahead-item[focused]')
+        focusIndex = items.indexOf focused
 
         if evt.which is keys.down
-          items[focusIndex]?.removeAttribute 'focused'
+          focused?.removeAttribute 'focused'
           items[ (focusIndex+1)%items.length ]?.setAttribute 'focused', ''
 
           if items[focusIndex]? && items[focusIndex].offsetTop + items[focusIndex].offsetHeight >= @$.results.offsetHeight
             @$.results.scrollTop += items[focusIndex].offsetHeight
 
         else if evt.which is keys.up
-          items[focusIndex]?.removeAttribute 'focused'
+          focused?.removeAttribute 'focused'
           focusIndex = items.length if focusIndex <= 0
-          items[focusIndex-1]?.setAttribute 'focused', ''          
+          items[focusIndex-1]?.setAttribute 'focused', ''
 
 ###remove
 Fired by some elements, see if we can remove the detail data.
@@ -213,14 +208,6 @@ Fired by some elements, see if we can remove the detail data.
           if idx > -1
             @value.splice idx, 1
           @fire 'itemremoved', detail
-
-      debouncedKeyPress: ->
-        @job 'keys', ->
-          if @$.input.value isnt lastEmittedValue
-            lastEmittedValue = @$.input.value
-            @fire 'inputchange', { value: @$.input.value }
-            @inputChanged()
-        , @debounce
 
 ##Polymer Lifecycle
 
