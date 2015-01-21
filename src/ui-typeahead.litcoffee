@@ -39,6 +39,8 @@ This is the data value bound picked currently.
           selectedTemplate.model = value: @value
         @job 'change', ->
           @fire 'change', @value
+          if @hasAttribute 'focused'
+            @fire 'edit', @value
         , 300
 
 ###valueFilter
@@ -50,6 +52,9 @@ in the dropdown list.
 
 ### change
 Change fires when the selected `ui-typeahead-item` changes.
+
+### edit
+Fires along with change when a real human is editing.
 
 ### inputchange
 inputChange fires when user changes the text input of the typehead.  This event is debounced per the debounce property (in milliseconds) and only fires
@@ -122,6 +127,12 @@ and either settting the value or buffering it in an array
         lastEmittedValue = null
 
 ##Event Handlers
+
+      focusIn: ->
+        @setAttribute 'focused', ''
+
+      focusOut: ->
+        @removeAttribute 'focused'
 
       inputChanged: (evt) ->
         evt.stopPropagation()
