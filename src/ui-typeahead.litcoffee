@@ -29,7 +29,7 @@ This is the data value bound picked currently.
         if selectedTemplate
           if Array.isArray @value
             selectedTemplate.setAttribute 'repeat', '{{value}}'
-          else
+          else if @value
             selectedTemplate.setAttribute 'if', '{{value}}'
             selectedTemplate.setAttribute 'bind', '{{value}}'
             if @value
@@ -37,8 +37,9 @@ This is the data value bound picked currently.
             else
               @$.input.setAttribute 'placeholder', '{{placeholder}}'
           selectedTemplate.model = value: @value
-        @close()
-        @fire 'change', @value
+        @job 'change', ->
+          @fire 'change', @value
+        , 300
 
 ###valueFilter
 This function, if present, maps data bound items from the
@@ -68,11 +69,12 @@ With `multiselect`, this fires when a new item is removed, with the item as deta
         @$.input.focus()
 
       open: ->
-        @$.results.classList.add 'open'
+        @$.results.setAttribute 'open', ''
 
       close: ->
-        @$.results.classList.remove 'open'
-        @clearValue()
+        if @$.results.hasAttribute 'open'
+          @$.results.removeAttribute 'open'
+          @clearValue()
 
 ### selectItem and clear
 Selecting an item means we pull in the data from the rendered `ui-typeahead-item`
