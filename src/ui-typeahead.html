@@ -21,11 +21,12 @@
     <content select="value"></content>
   </ui-input>
 
-  <section id="results" on-click="{{clickResults}}">
-    <content select="ui-typeahead-item">
-    </content>
+  <section id="results">
+    <content select="ui-typeahead-section"></content>
+    <items on-click="{{clickResults}}">
+      <content select="ui-typeahead-item"></content>
+    </items>
   </section>
-
 
 </template>
 <script src="./ui-typeahead.litcoffee"></script>

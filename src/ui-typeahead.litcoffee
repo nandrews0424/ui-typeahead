@@ -87,7 +87,7 @@ and either settting the value or buffering it in an array
 
       selectItem: (item) ->
         # allow typeahead items to be non-selectable: group headers, messages alternately use diffent element tags
-        return if !item or item.hasAttribute "label"
+        return if !item or item.nodeName is "UI-TYPEAHEAD-SECTION"
 
         selectedValue = (@valueFilter or (x) -> x)(item?.templateInstance?.model)
         if @multiselect?
@@ -231,7 +231,6 @@ wasn't working and would trigger even when clicking results withint the
 ui-typeahead)
 
       attached: ->
-        @debounce ||= 300
         window.addEventListener 'click', (evt) => @documentClick(evt)
 
 ### detached
