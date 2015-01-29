@@ -3,7 +3,6 @@
 <html>
   <head>
     <title>ui-typeahead</title>
-    <script src="http://localhost:35729/livereload.js"></script>
     <link rel="import" href="node_modules/ui-fonts/fonts.html">
     <link rel="import" href="node_modules/ui-styles/ui-styles.html">
     <link rel="import" href="node_modules/polymer/polymer.html">
@@ -21,11 +20,13 @@
     </style>
   </head>
   <body container unresolved>
-
+    <h1>ui-typeahead demo</h1>
+    <div style="margin: 20px 0px 10px 10px;">
+      <h4>Single Selection</h4>
       <ui-typeahead id="single" placeholder="This is a typeahead">
         <icon search></icon>
-        <!-- the currently selected value notice you do not bind this -- it
-        will be bound for you! -->
+        <!-- the currently selected value
+        ... don't bind this, it'll be bound for you! -->
         <template value>
           <value><icon icon="{{icon}}"></icon> {{ text }}</value>
         </template>
@@ -37,24 +38,23 @@
           </ui-typeahead-item>
         </template>
       </ui-typeahead>
+    </div>
 
-      <h4>Last Selection</h4>
+    <div style="margin: 10px 10px;">
+      <span style="margin: 0 20px 10px 35px;">Last Selection: </span>
       <template id="selected-item" bind="{{item}}">
-        <div>
-          <h3>
-            <icon icon="{{icon}}"></icon>&nbsp;{{text}}
-          </h3>
-          <p>
-            {{detail}}
-          </p>
-        </div>
+        <span style="font-weight: bold;"><icon icon="{{icon}}"></icon>&nbsp;{{text}}</span>
+        <p style="margin: 0px 20px 30px 35px;">{{detail}}</p>
       </template>
+    </div>
 
+    <div style="margin: 30px 0px 10px 10px;">
+      <h4>Multi-Selection</h4>
       <ui-typeahead id="multiple" placeholder="This is a multiselect" multiselect>
         <icon tag></icon>
         <!--this will display multiple items and repeat automatically
-        ... you just make a template for a single item, the [value] marker
-        is the <clue></clue>-->
+        ... you just make a template for a single item
+        ... the [value] marker is the <clue></clue>-->
         <template value>
           <value><icon icon="{{icon}}"></icon> {{ text }}</value>
         </template>
@@ -66,6 +66,7 @@
           </ui-typeahead-item>
         </template>
       </ui-typeahead>
+    </div>
 
     <script>
 
