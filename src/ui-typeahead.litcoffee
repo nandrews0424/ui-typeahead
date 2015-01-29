@@ -48,6 +48,9 @@ This function, if present, maps data bound items from the
 selection list so that the `value` isn't just limited to exactly the values
 in the dropdown list.
 
+###sticky
+Allow the menu section to remain open
+
 ##Events
 
 ### change
@@ -77,6 +80,7 @@ With `multiselect`, this fires when a new item is removed, with the item as deta
         @$.results.setAttribute 'open', ''
 
       close: ->
+        return if @.hasAttribute 'sticky'
         if @$.results.hasAttribute 'open'
           @$.results.removeAttribute 'open'
           @clearValue()
