@@ -80,7 +80,6 @@ With `multiselect`, this fires when a new item is removed, with the item as deta
         @$.results.setAttribute 'open', ''
 
       close: ->
-        return if @.hasAttribute 'sticky'
         if @$.results.hasAttribute 'open'
           @$.results.removeAttribute 'open'
           @clearValue()
@@ -151,7 +150,10 @@ Since we stop click propagation from within our element, anything
 bubbling up to the document handler is outside us and should unfocus the element
 
       documentClick: (evt) ->
-        @close()
+        if @.hasAttribute 'sticky'
+          return
+        else
+          @close()
 
 ### click
 Clicks on a ui-typeahead-item mark it as selected, all clicks within ui-typeahead
