@@ -101,6 +101,7 @@ and either settting the value or buffering it in an array
         else
           @value = selectedValue
           @$.input.blur()
+          @fire 'itemselected', selectedValue
         @clearValue()
 
       clear: () ->
