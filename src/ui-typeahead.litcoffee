@@ -134,9 +134,13 @@ and either settting the value or buffering it in an array
 
       focusIn: ->
         @setAttribute 'focused', ''
+        if not @hasAttribute 'multiselect'
+          @$.input.hideValue()
 
       focusOut: ->
         @removeAttribute 'focused'
+        if not @hasAttribute 'multiselect'
+          @$.input.showValue()
 
       inputChanged: (evt) ->
         evt.stopPropagation()
