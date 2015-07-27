@@ -8,7 +8,6 @@ Typeahead control that handles the common typeahead functionality by the followi
     require '../node_modules/ui-styles/polyfill.js'
 
     lastEmittedValue = null
-    backspaceBufferCount = 0
     keys =
       up: 38
       down: 40
@@ -126,7 +125,6 @@ and either settting the value or buffering it in an array
 ### Make sure we clear the value and its hidden backing state + the backspace buffer
 
       clearValue: ->
-        backspaceBufferCount = 0
         @$.input.value = null
         lastEmittedValue = null
 
@@ -179,11 +177,6 @@ On keyup, the typeahead checks for control keypresses.
           @selectItem focusedItem
         else if evt.which is keys.escape
           @close()
-        else if evt.which is keys.backspace
-          @clear() if not @$.input.value and backspaceBufferCount > 0
-          backspaceBufferCount += 1
-        else
-          backspaceBufferCount = 0
 
 Size the results panel so that it doesn't fall off the page, instead -- make it
 scroll.
@@ -206,7 +199,6 @@ Let's let the user hold a key like up/down to nav the list
 Also make sure items scroll into view for long lists
 
       keydown: (evt) ->
-        return unless evt.which in [keys.down,keys.up]
         items = [].slice.call(@querySelectorAll('ui-typeahead-item'))
         focused = @querySelector('ui-typeahead-item[focused]')
         focusIndex = items.indexOf focused
@@ -223,6 +215,8 @@ Also make sure items scroll into view for long lists
           focusIndex = items.length if focusIndex <= 0
           items[focusIndex-1]?.setAttribute 'focused', ''
 
+        else if evt.which is keys.backspace
+          @clear() if not @$.input.value
 ###remove
 Fired by some elements, see if we can remove the detail data.
 
