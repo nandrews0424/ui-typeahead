@@ -2,11 +2,11 @@
   "name": "ui-typeahead",
   "version": "1.0.0",
   "dependencies": {
-    "polymer": "git://github.com/custom-elements/polymer#master",
+    "polymer": "git+https://github.com/custom-elements/polymer#master",
     "polymer-serve": "^0.0.30",
     "ui-fonts": "^0.0.1",
-    "ui-input": "git://github.com/Custom-Elements/ui-input#master",
-    "ui-styles": "git://github.com/custom-elements/ui-styles"
+    "ui-input": "git+https://github.com/Custom-Elements/ui-input#master",
+    "ui-styles": "git+https://github.com/custom-elements/ui-styles"
   },
   "license": "ISC",
   "scripts": {
